@@ -1,0 +1,21 @@
+{
+  "name": "final_assignment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.2"
+  },
+  "dependencies": {
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "luxon": "^3.5.0"
+  }
+}
