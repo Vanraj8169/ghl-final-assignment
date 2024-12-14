@@ -1,6 +1,7 @@
-import { parse, parseISO, format } from "date-fns";
-import { toZonedTime, format as tzFormat } from "date-fns-tz";
+
+// import { format } from "date-fns-tz";
 import { FetchedAppointment, StoredAppointment } from "./interfaces";
+import { formatInTimeZone } from 'date-fns-tz';
 
 // Generates a random date for a specific month in the year 2025, excluding weekends (Saturday and Sunday)
 export function generateRandomDateForMonth(month: number): string {
@@ -35,36 +36,33 @@ export const ContactDetails = {
   Email: "ganesh@gmail.com",
 };
 
-function convertToIST(dateStr: string, sourceTimezone: string): Date {
-  // Parse the source time string
-  const sourceDate = parse(dateStr, "EEE, MMM d, yyyy h:mm a", new Date());
 
-  const istDate = new Date(sourceDate);
-  istDate.setHours(sourceDate.getHours() + 13);
-  istDate.setMinutes(sourceDate.getMinutes() + 30);
-  
-  return istDate;
+export function matchAppointments(fetchedAppointment, storedAppointment) {
+  const { startTime, endTime } = fetchedAppointment;
+  const { start_time, end_time, timezone } = storedAppointment;
+
+  const startTimeInTargetTZ = new Date(formatInTimeZone(new Date(startTime), timezone, 'yyyy-MM-dd HH:mm:ss'));
+  const endTimeInTargetTZ = new Date(formatInTimeZone(new Date(endTime), timezone, 'yyyy-MM-dd HH:mm:ss'));
+
+  const storedStartTimeTZ = new Date(start_time);
+  const storedEndTimeTZ = new Date(end_time);
+
+  const fetchedStartTime = `${startTimeInTargetTZ.getDate()} ${startTimeInTargetTZ.getTime()}`;
+  const fetchedEndTime = `${endTimeInTargetTZ.getDate()} ${endTimeInTargetTZ.getTime()}`;
+  const storedStartTime = `${storedStartTimeTZ.getDate()} ${storedStartTimeTZ.getTime()}`;
+  const storedEndTime = `${storedEndTimeTZ.getDate()} ${storedEndTimeTZ.getTime()}`;
+
+
+  console.log(fetchedStartTime)
+  console.log(fetchedEndTime)
+  console.log(storedStartTime)
+  console.log(storedEndTime)
+
+
+  const isMatch = fetchedStartTime === storedStartTime && fetchedEndTime === storedEndTime;
+
+  return isMatch;
 }
 
-export function matchAppointments(
-  fetchedAppointment: FetchedAppointment, 
-  storedAppointment: StoredAppointment
-): boolean {
-  // Convert stored appointment times to IST
-  const storedStartIST = convertToIST(storedAppointment.start_time, storedAppointment.timezone);
-  const storedEndIST = convertToIST(storedAppointment.end_time, storedAppointment.timezone);
-
-  // Parse fetched appointment times
-  const fetchedStartIST = new Date(fetchedAppointment.startTime);
-  const fetchedEndIST = new Date(fetchedAppointment.endTime);
-
-  // Log detailed conversion information for debugging
-
-  // Precise time comparison
-  return (
-    Math.abs(storedStartIST.getTime() - fetchedStartIST.getTime()) < 1000 &&
-    Math.abs(storedEndIST.getTime() - fetchedEndIST.getTime()) < 1000
-  );
-}
 
 
