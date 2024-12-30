@@ -9,24 +9,6 @@ export class Home{
         this.page =page;
     }
 
-      // Below function is used to interact with element
-  private async interactWithElement(
-    action: "fill" | "click",
-    locator: string,
-    value?: string
-  ) {
-    const element = this.page.locator(locator);
-
-    switch (action) {
-      case "fill":
-        if (value) await element.fill(value);
-        break;
-      case "click":
-        await element.click();
-        break;
-    }
-  }
-
     async fetchAllMenus(){
         const menusLocator = this.page.locator(homePageObject.allMenus);
         const menus = await menusLocator.allTextContents();
@@ -34,12 +16,13 @@ export class Home{
     }
 
     async navigateToAgencyBillingDashboard(){
-        await this.interactWithElement("click",homePageObject.settingsBtn);
-        await this.interactWithElement("click",homePageObject.billingsBtn);
-        await this.interactWithElement("click",notificationWalletObject.notificationBtn);
-
-        await expect(this.page.locator(notificationWalletObject.walletNotificationSection)).toBeVisible();
-        await expect(this.page.locator(notificationWalletObject.globalLimit)).toBeVisible();
-        await expect(this.page.locator(notificationWalletObject.notificationUsageTxt)).toHaveText(notificationWalletUsageText);
+        await this.page.locator(homePageObject.settingsBtn).click();
+        await this.page.locator(homePageObject.billingsBtn).click();
+        await this.page.locator(notificationWalletObject.notificationBtn).click();
+  
+        expect(this.page.locator(notificationWalletObject.walletNotificationSection),'Checking whether notification wallet section is appearing').toBeVisible();
+        await this.page.waitForSelector(notificationWalletObject.globalLimit,{state: 'visible'});
+        expect(this.page.locator(notificationWalletObject.globalLimit),'Checking whether global limit text is appearing').toBeVisible();
+        expect(this.page.locator(notificationWalletObject.notificationUsageTxt),'Checking whether notification wallet usage text is visible').toHaveText(notificationWalletUsageText);
     }
 }
