@@ -16,7 +16,6 @@ test.describe("Validating the billing tab and toggle functionality", async () =>
       homePage = new Home(page);
       notificationWalletPage = new NotificationWallet(page);
       await page.goto(homePageData.loginPageUrl);
-     
     });
   });
 
@@ -37,5 +36,13 @@ test.describe("Validating the billing tab and toggle functionality", async () =>
 
   test("Verify toggle functionality", async () => {
     await notificationWalletPage.verifyingToggleFunctionality();
+  });
+
+  test("Verifying Email Notification for wallet usage", async () => {
+    await notificationWalletPage.verifyingEmailNotificationForWalletUsage();
+  });
+
+  test("Verifying Notify Email address section", async () => {
+    await notificationWalletPage.verifyAndAddNotifiedEmailAddresses();
   });
 });
