@@ -156,7 +156,7 @@ export class NotificationWallet {
           testEmails[i]
         );
       console.log(addedEmailLocator);
-      expect(this.page.locator(addedEmailLocator)).toBeVisible();
+      expect(this.page.locator(addedEmailLocator),"Checking whether email match with the added one's").toBeVisible();
     }
   }
 }
